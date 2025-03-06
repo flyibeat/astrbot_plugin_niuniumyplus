@@ -162,10 +162,10 @@ class NiuniuPlugin(Star):
                 'no_target': "❌ {nickname} 请指定要锁的目标",
                 'target_not_registered': "❌ 对方尚未注册牛牛",
                 'self_lock': "❌ 不能锁自己的牛牛",
-                'decrease': "😱 {target_nickname} 的牛牛被 {nickname} 的小嘴牢牢锁了！长度减少 {change}cm！",
-                'increase': "😂 {target_nickname} 的牛牛被 {nickname} 锁爽了！增加 {change}cm！",
-                'break': "💔 {target_nickname} 的牛牛被 {nickname} 锁断了！长度减少一半！",
-                'no_effect': "😅 {target_nickname} 的牛牛完美躲过了 {nickname} 嘴巴！"
+                'decrease': "😱 {target_nickname} 的牛牛被 {nickname} 的乾坤圈牢牢锁了！长度减少 {change}cm！",
+                'increase': "😂 {target_nickname} 的牛牛被 {nickname} 喂饱了牧草！增加 {change}cm！",
+                'break': "💔 {target_nickname} 的牛牛被 {nickname} 砍断了！长度减少一半！",
+                'no_effect': "😅 {target_nickname} 的牛牛完美躲过了 {nickname} 的武器！"
             }
         }
         
@@ -468,7 +468,7 @@ class NiuniuPlugin(Star):
             await self.context.send_message(mock_event)
         
         asyncio.create_task(reward_task())
-        yield event.plain_result(f"小南娘：{nickname}又出来yj啦，这次要陪客户{hours}小时，预计可以赚到{expected_coins}金币哦~")
+        yield event.plain_result(f"小南娘：{nickname}又出来上工啦，这次要陪客户{hours}小时，预计可以赚到{expected_coins}金币哦~")
 
     async def _check_work_time(self, event):
         """查看打工时间"""
@@ -588,7 +588,7 @@ class NiuniuPlugin(Star):
             change = random.randint(10, 20)  # 原来的2-5翻倍为10-20
             user_data['length'] += change
             items['viagra'] -= 1
-            text = f"💊 伟哥生效！牛牛增加{change}cm！\n还剩{items['viagra']}次效果"
+            text = f"💊 强经壮骨丸生效！牛牛增加{change}cm！\n还剩{items['viagra']}次效果"
             
             # 更新最后打胶时间
             self.last_actions.setdefault(group_id, {}).setdefault(user_id, {})['dajiao'] = current_time
@@ -760,9 +760,9 @@ class NiuniuPlugin(Star):
         # 显示商城信息
         shop_text = (
             "🏪 牛牛商城\n"
-            "1️⃣ 伟哥 - 80金币\n"
+            "1️⃣ 强经壮骨丸 - 80金币\n"
             "   无视冷却连续打胶5次，且长度不会变短\n"
-            "2️⃣ 男科手术 - 100金币\n"
+            "2️⃣ 揠苗助长手术 - 100金币\n"
             "   75%概率长度翻倍，25%概率减半并获得50金币补偿\n"
             "3️⃣ 六味地黄丸 - 20金币\n"
             "   下次比划必胜\n"
@@ -790,7 +790,7 @@ class NiuniuPlugin(Star):
                 return
             user_data['coins'] -= 80
             items['viagra'] = 5
-            yield event.plain_result("✅ 购买成功！获得5次伟哥效果")
+            yield event.plain_result("✅ 购买成功！获得5次强经壮骨丸效果")
 
         elif item_id == 2:  # 男科手术
             if coins < 100:
