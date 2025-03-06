@@ -142,16 +142,16 @@ class NiuniuPlugin(Star):
             },
             'menu': {
                 'default': """📜 牛牛菜单：
-                        🔹 注册牛牛 - 初始化你的牛牛
-                        🔹 打胶 - 提升牛牛长度
-                        🔹 我的牛牛 - 查看当前状态
-                        🔹 锁牛牛 @目标 - 锁他牛牛
-                        🔹 比划比划 @目标 - 发起对决
-                        🔹 牛牛排行 - 查看群排行榜
-                        🔹 每日签到 - 领取金币奖励
-                        🔹 牛牛商城 - 购买强力道具
-                        🔹 打工 - 赚取金币
-                        🔹 牛牛开/关 - 管理插件"""
+            🔹 注册牛牛 - 初始化你的牛牛
+            🔹 打胶 - 提升牛牛长度
+            🔹 我的牛牛 - 查看当前状态
+            🔹 锁牛牛 @目标 - 锁他牛牛
+            🔹 比划比划 @目标 - 发起对决
+            🔹 牛牛排行 - 查看群排行榜
+            🔹 每日签到 - 领取金币奖励
+            🔹 牛牛商城 - 购买强力道具
+            🔹 打工 - 赚取金币
+            🔹 牛牛开/关 - 管理插件"""
             },
             'system': {
                 'enable': "✅ 牛牛插件已启用",
@@ -1210,7 +1210,7 @@ class NiuniuPlugin(Star):
         rand = random.random()
         old_length = target_data['length']
         
-        if rand < 0.2:  # 20% 减少
+        if rand < 0.3:  # 30% 减少
             change = random.randint(1, 5)
             target_data['length'] = max(1, target_data['length'] - change)
             text = self.niuniu_texts['lock']['decrease'].format(
@@ -1218,7 +1218,7 @@ class NiuniuPlugin(Star):
                 target_nickname=target_data['nickname'],
                 change=change
             )
-        elif rand < 0.8:  # 60% 增长
+        elif rand < 0.9:  # 60% 增长
             change = random.randint(1, 5)
             target_data['length'] += change
             text = self.niuniu_texts['lock']['increase'].format(
@@ -1226,14 +1226,14 @@ class NiuniuPlugin(Star):
                 target_nickname=target_data['nickname'],
                 change=change
             )
-        elif rand < 0.9:  # 10% 咬断
+        elif rand < 0.95:  # 5% 咬断
             change = target_data['length'] // 2
             target_data['length'] = max(1, target_data['length'] - change)
             text = self.niuniu_texts['lock']['break'].format(
                 nickname=nickname,
                 target_nickname=target_data['nickname']
             )
-        else:  # 10% 不变
+        else:  # 5% 不变
             text = self.niuniu_texts['lock']['no_effect'].format(
                 nickname=nickname,
                 target_nickname=target_data['nickname']
