@@ -1,4 +1,4 @@
-
+针对词汇进行和谐，仅供自己使用。感谢原作者 长安某 以及 Jason.Joestar
 </div>
 
 <div align="center">
