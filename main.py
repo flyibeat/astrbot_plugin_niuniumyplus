@@ -412,8 +412,8 @@ class NiuniuPlugin(Star):
             return
 
         worktime = int(match.group(1))
-        if worktime <= 10:
-            yield event.plain_result("❌ 打工时长必须大于10分钟")
+        if worktime <= 10 or worktime % 10 != 0:
+            yield event.plain_result("❌ 打工时长必须大于10分钟，且为10的倍数")
             return
         if worktime > self.MAX_WORK_TIME:
             yield event.plain_result(f"❌ 单次打工时长不能超过{self.MAX_WORK_TIME}分钟")
