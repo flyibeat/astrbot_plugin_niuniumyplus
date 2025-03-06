@@ -1210,7 +1210,7 @@ class NiuniuPlugin(Star):
         rand = random.random()
         old_length = target_data['length']
         
-        if rand < 0.3:  # 30% 减少
+        if rand < 0.6:  # 60% 减少
             change = random.randint(1, 5)
             target_data['length'] = max(1, target_data['length'] - change)
             text = self.niuniu_texts['lock']['decrease'].format(
@@ -1218,7 +1218,7 @@ class NiuniuPlugin(Star):
                 target_nickname=target_data['nickname'],
                 change=change
             )
-        elif rand < 0.9:  # 60% 增长
+        elif rand < 0.9:  # 30% 增长
             change = random.randint(1, 5)
             target_data['length'] += change
             text = self.niuniu_texts['lock']['increase'].format(
