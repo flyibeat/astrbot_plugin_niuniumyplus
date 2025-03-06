@@ -31,9 +31,9 @@ class NiuniuPlugin(Star):
     COMPARE_COOLDOWN = 180   # 比划冷却
     LOCK_COOLDOWN = 300      # 锁牛牛冷却时间 5分钟
     INVITE_LIMIT = 3         # 邀请次数限制
-    MAX_WORK_TIME = 60       # 最大打工时长（分钟）
+    MAX_WORK_HOURS = 6       # 最大打工时长（小时）
     WORK_REWARD_INTERVAL = 600  # 打工奖励间隔（秒）
-    WORK_REWARD_COINS = 30     # 每10分钟打工奖励金币数
+    WORK_REWARD_COINS = 5     # 每10分钟打工奖励金币数
 
     def __init__(self, context: Context, config: dict = None):
         super().__init__(context)
@@ -362,11 +362,11 @@ class NiuniuPlugin(Star):
         
         if work_data:
             elapsed_time = current_time - work_data['start_time']
-            return elapsed_time < work_data['duration'] * 60
+            return elapsed_time < work_data['duration'] * 3600
         return False
 
     def _get_daily_work_time(self, group_id, user_id):
-        """获取用户当日已打工时长（分钟）"""
+        """获取用户当日已打工时长（小时）"""
         group_id, user_id = str(group_id), str(user_id)
         user_actions = self.last_actions.setdefault(group_id, {}).setdefault(user_id, {})
         work_data = user_actions.get('work_data')
@@ -381,7 +381,7 @@ class NiuniuPlugin(Star):
             return 0
 
         return min(work_data['duration'], 
-                  (current_time - work_data['start_time']) / 60)
+                  (current_time - work_data['start_time']) / 3600)
 
     async def _work(self, event):
         """打工功能"""
@@ -406,37 +406,37 @@ class NiuniuPlugin(Star):
 
         # 解析打工时长
         msg = event.message_str.strip()
-        match = re.search(r'打工\s*(\d+)\s*分钟', msg)
+        match = re.search(r'打工\s*(\d+)\s*小时', msg)
         if not match:
-            yield event.plain_result("❌ 请输入正确的打工时长，例如：打工 20分钟")
+            yield event.plain_result("❌ 请输入正确的打工时长，例如：打工 2小时")
             return
 
-        worktime = int(match.group(1))
-        if worktime <= 10 or worktime % 10 != 0:
-            yield event.plain_result("❌ 打工时长必须大于10分钟，且为10的倍数")
+        hours = int(match.group(1))
+        if hours <= 0:
+            yield event.plain_result("❌ 打工时长必须大于0小时")
             return
-        if worktime > self.MAX_WORK_TIME:
-            yield event.plain_result(f"❌ 单次打工时长不能超过{self.MAX_WORK_TIME}分钟")
+        if hours > self.MAX_WORK_HOURS:
+            yield event.plain_result(f"❌ 单次打工时长不能超过{self.MAX_WORK_HOURS}小时")
             return
 
         # 检查每日打工时长限制
         daily_work_time = self._get_daily_work_time(group_id, user_id)
-        remaining_time = self.MAX_WORK_TIME - daily_work_time
-        if remaining_time <= 0:
-            yield event.plain_result(f"❌ 今日打工时长已达上限{self.MAX_WORK_TIME}分钟")
+        remaining_hours = self.MAX_WORK_HOURS - daily_work_time
+        if remaining_hours <= 0:
+            yield event.plain_result(f"❌ 今日打工时长已达上限{self.MAX_WORK_HOURS}小时")
             return
-        if worktime > remaining_time:
-            yield event.plain_result(f"❌ 今日只能再打工{remaining_time:.1f}分钟")
+        if hours > remaining_hours:
+            yield event.plain_result(f"❌ 今日只能再打工{remaining_hours:.1f}小时")
             return
 
         # 计算预期金币收益
-        expected_coins = (worktime * 60 // self.WORK_REWARD_INTERVAL) * self.WORK_REWARD_COINS
+        expected_coins = (hours * 3600 // self.WORK_REWARD_INTERVAL) * self.WORK_REWARD_COINS
 
         # 记录打工信息到last_actions
         user_actions = self.last_actions.setdefault(group_id, {}).setdefault(user_id, {})
         user_actions['work_data'] = {
             'start_time': time.time(),
-            'duration': worktime
+            'duration': hours
         }
         self._save_last_actions()
 
@@ -444,7 +444,7 @@ class NiuniuPlugin(Star):
         async def reward_task():
             user_actions = self.last_actions[group_id][user_id]
             work_data = user_actions['work_data']
-            end_time = work_data['start_time'] + worktime * 60
+            end_time = work_data['start_time'] + hours * 3600
             total_coins = 0
             while time.time() < end_time:
                 await asyncio.sleep(self.WORK_REWARD_INTERVAL)
@@ -478,7 +478,7 @@ class NiuniuPlugin(Star):
             await self.context.send_message(mock_event)
         
         asyncio.create_task(reward_task())
-        yield event.plain_result(f"小南娘：{nickname}又出来上工啦，这次要陪客户{worktime}分钟，预计可以赚到{expected_coins}金币哦~")
+        yield event.plain_result(f"小南娘：{nickname}又出来上工啦，这次要陪客户{hours}小时，预计可以赚到{expected_coins}金币哦~")
 
     async def _check_work_time(self, event):
         """查看打工时间"""
@@ -499,7 +499,7 @@ class NiuniuPlugin(Star):
             return
 
         current_time = time.time()
-        end_time = work_data['start_time'] + work_data['duration'] * 60
+        end_time = work_data['start_time'] + work_data['duration'] * 3600
         remaining_seconds = end_time - current_time
 
         remaining_hours = int(remaining_seconds // 3600)
