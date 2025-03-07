@@ -16,7 +16,7 @@ if current_dir not in sys.path:
 from sign_image import SignImageGenerator
 
 # 常量定义
-PLUGIN_DIR = os.path.join('data', 'plugins', 'astrbot_plugin_niuniu')
+PLUGIN_DIR = os.path.join('data', 'plugins', 'astrbot_plugin_niuniumyplus')
 os.makedirs(PLUGIN_DIR, exist_ok=True)
 NIUNIU_LENGTHS_FILE = os.path.join('data', 'niuniu_lengths.yml')
 NIUNIU_TEXTS_FILE = os.path.join(PLUGIN_DIR, 'niuniu_game_texts.yml')
