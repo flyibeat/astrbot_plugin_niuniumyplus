@@ -447,10 +447,10 @@ class NiuniuPlugin(Star):
             end_time = work_data['start_time'] + hours * 3600
             total_coins = 0
             while time.time() < end_time:
-                await asyncio.sleep(self.WORK_REWARD_INTERVAL)
+                await asyncio.sleep(self.WORK_REWARD_INTERVAL)                
                 if not self._is_user_working(group_id, user_id):
                     break
-                user_data['coins'] = user_data.get('coins', 0) + self.WORK_REWARD_COINS
+                user_data['coins'] = user_data.get('coins', 0) + self.WORK_REWARD_COINS  
                 total_coins += self.WORK_REWARD_COINS
                 self._save_niuniu_lengths()
             
